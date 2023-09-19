@@ -1,7 +1,17 @@
 
 import streamlit as st
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
+
+
+fontsize = 8
+mpl.rcParams.update(mpl.rcParamsDefault)
+mpl.rcParams[ 'font.sans-serif'  ] = 'Calibri'
+mpl.rcParams[ 'font.size'        ] = fontsize
+mpl.rcParams[ 'xtick.direction'  ] = 'out'
+mpl.rcParams[ 'ytick.direction'  ] = 'out'       
+mpl.rcParams[ 'lines.linewidth'  ] = 1.0     
 
 
 def DFT(data, Fs):
@@ -15,6 +25,19 @@ def DFT(data, Fs):
 
 st.set_page_config(layout='wide')
 st.title('Stacked sines')
+
+# Remove whitespace above app title
+st.markdown("""
+        <style>
+               .block-container {
+                    padding-top: 1rem;
+                    padding-bottom: 0rem;
+                    padding-left: 5rem;
+                    padding-right: 5rem;
+                }
+        </style>
+        """, unsafe_allow_html=True)
+
 c1, c2 = st.columns([1,3])
 
 with c1:
@@ -60,24 +83,24 @@ Ft = np.sin(W1*t) + np.sin(W2*t) + np.sin(W3*t)
 F, A, P = DFT(Ft, Fs)
 
 with c2:
-    fig, ax = plt.subplots(3, 1, figsize=[16.00/2.54, 22.00/2.54])
+    fig, ax = plt.subplots(3, 1, figsize=[16.00/2.54, 10.00/2.54])
     ax[0].plot(t, Ft)
     ax[0].set_xlabel('Time (minutes)')
     ax[0].set_ylabel('Magnitude')
-    ax[0].grid(True, which='both')
+    ax[0].grid(True, which='both', c='Gainsboro')
 
     ax[1].semilogx(1./F, A)
+    ax[1].set_xlabel('Period (minutes per cycle)')
     ax[1].set_ylabel('Amplitude')
-    ax[1].grid(True, which='both')
-    ax[1].set_xticklabels([])
+    ax[1].grid(True, which='both', c='Gainsboro')
     ax[1].set_xlim(1e-1, 1e2)
     
     ax[2].semilogx(1./F, P)
-    ax[2].set_xlabel('Period (Minutes per cycle)')
+    ax[2].set_xlabel('Period (minutes per cycle)')
     ax[2].set_ylabel('Phase (radians)')
-    ax[2].grid(True, which='both')
-    ax[2].set_yticks([-pi, -pi/2., 0., pi/2., pi])
-    ax[2].set_yticklabels([r'$-\pi$', r'$-\pi/2$', '0', r'+$\pi/2$', r'$+\pi$'])
+    ax[2].grid(True, which='both', c='Gainsboro')
+    ax[2].set_yticks([-pi, 0., pi])
+    ax[2].set_yticklabels([r'$-\pi$', '0', r'$+\pi$'])
     ax[2].set_xlim(1e-1, 1e2)
     ax[2].set_ylim(-pi, pi)
     

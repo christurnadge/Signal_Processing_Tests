@@ -1,7 +1,17 @@
 
 import streamlit as st
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
+
+
+fontsize = 8
+mpl.rcParams.update(mpl.rcParamsDefault)
+mpl.rcParams[ 'font.sans-serif'  ] = 'Calibri'
+mpl.rcParams[ 'font.size'        ] = fontsize
+mpl.rcParams[ 'xtick.direction'  ] = 'out'
+mpl.rcParams[ 'ytick.direction'  ] = 'out'       
+mpl.rcParams[ 'lines.linewidth'  ] = 1.0     
 
 
 def DFT(data, Fs):
@@ -31,6 +41,19 @@ def coloured_noise(f):
 
 st.set_page_config(layout='wide')
 st.title('Stacked noisy sines')
+
+# Remove whitespace above app title
+st.markdown("""
+        <style>
+               .block-container {
+                    padding-top: 1rem;
+                    padding-bottom: 0rem;
+                    padding-left: 5rem;
+                    padding-right: 5rem;
+                }
+        </style>
+        """, unsafe_allow_html=True)
+
 c1, c2 = st.columns([1,3])
 
 with c1:
@@ -85,11 +108,11 @@ with c1:
     F1, A1, P1 = DFT(Ft_stacked, Fs/number_stacks)
 
 with c2:
-    fig, ax = plt.subplots(3, 1, figsize=[16.00/2.54, 18.00/2.54])
+    fig, ax = plt.subplots(3, 1, figsize=[16.00/2.54, 10.00/2.54])
     ax[0].plot(t/30., Ft)
     ax[0].set_xlabel('Time (months)')
     ax[0].set_ylabel('Magnitude')
-    ax[0].grid(True, which='both')
+    ax[0].grid(True, which='both', c='Gainsboro')
 
     if plot_type=='Linear':
         ax[1].plot(F0, A0, c='Pink')
@@ -100,21 +123,17 @@ with c2:
         ax[1].loglog(F1, A1, c=u'#1f77b4')
     ax[1].set_xlabel('Frequency (cycles per day)')
     ax[1].set_ylabel('Amplitude')
-    ax[1].grid(True, which='both')
+    ax[1].grid(True, which='both', c='Gainsboro')
     ax[1].set_ylim(-0.05, 1.05)
     
-    if plot_type=='Linear':
-        ax[2].plot(F0, P0, c='Pink')
-        ax[2].plot(F1, P1, c=u'#1f77b4')
-        ax[2].set_xlim(0.5, 2.5)
-    elif plot_type=='Log-Log':
-        ax[2].loglog(F0, P0, c='Pink')
-        ax[2].loglog(F1, P1, c=u'#1f77b4')
+    ax[2].plot(F0, P0, c='Pink')
+    ax[2].plot(F1, P1, c=u'#1f77b4')
+    ax[2].set_xlim(0.5, 2.5)
     ax[2].set_xlabel('Frequency (cycles per day)')
     ax[2].set_ylabel('Phase (radians)')
-    ax[2].grid(True, which='both')
-    ax[2].set_yticks([-pi, -pi/2., 0., pi/2., pi])
-    ax[2].set_yticklabels([r'$-\pi$', r'$-\pi/2$', '0', r'+$\pi/2$', r'$+\pi$'])
+    ax[2].grid(True, which='both', c='Gainsboro')
+    ax[2].set_yticks([-pi, 0., pi])
+    ax[2].set_yticklabels([r'$-\pi$', '0', r'$+\pi$'])
     ax[2].set_ylim(-pi, pi)
     
     plt.tight_layout()    
